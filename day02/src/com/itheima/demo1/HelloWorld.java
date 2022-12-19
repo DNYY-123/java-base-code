@@ -31,18 +31,13 @@ public class HelloWorld {
         * 如果他们的和为6的倍数，最终结果输出为true
         * 其他情况为false
         * */
-        Scanner sc = new Scanner(System.in);
-        System.out.println("请输入第一位数：");
-        int num1 = sc.nextInt();
-       // System.out.println("请输入第二位数：");
-       // int num2 = sc.nextInt();
-       // System.out.println((num1 == 6 || num2 == 6) || ((num1 + num2) % 6 == 0));
-       // int end = 1;
-       // for (int i = 0; i < end; i++) {
-       //
-       // }
-        int numLenth = ("" + num1).length();
-        System.out.println(numLenth);
-        int ge = num1 % (10^(numLenth - 1));
+        // Scanner sc = new Scanner(System.in);
+        // System.out.println("请输入第一位数：");
+        // int num1 = sc.nextInt();
+        // int numLenth = ("" + num1).length();
+        // System.out.println(numLenth);
+        // int ge = num1 % (10^(numLenth - 1));
+        char[] arr = {'1', '2', '3'};
+        System.out.println(arr.toString());
     }
 }
