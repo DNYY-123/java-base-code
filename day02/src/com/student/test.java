@@ -25,7 +25,6 @@ public class test {
         studentManagementSys s = new studentManagementSys(student.size() + 1, name, age, address);
         student.add(s);
         queryInfo(student);
-        init();
     }
 
     // 删除功能
@@ -41,10 +40,14 @@ public class test {
             student.remove(id - 1);
             System.out.println("删除成功!");
             queryInfo(student);
-            delInfo(student);
+            System.out.println("是否继续删除信息？ 1 是 2 否");
+            String str = sc.next();
+            if (str.equals("1")) {
+                delInfo(student);
+            }
+        } else {
+            System.out.println("没有此学生的信息");
         }
-        System.out.println("没有此学生的信息");
-        init();
     }
 
     // 修改功能
@@ -70,7 +73,6 @@ public class test {
             modifyInfo(student);
         }
         System.out.println("没有此学生的信息");
-        init();
     }
 
     // 查询功能
@@ -96,26 +98,27 @@ public class test {
 
     // 初始化
     public static void init() {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("---------------欢迎来到黑马学院学生管理系统---------------");
-        System.out.println("1：添加学生");
-        System.out.println("2：删除学生");
-        System.out.println("3：修改学生");
-        System.out.println("4：查询学生");
-        System.out.println("5：退出");
-        System.out.println("请输入您的选择：");
-        int num = sc.nextInt();
         ArrayList<studentManagementSys> student = initialInfo();
-        switch (num) {
-            case 1 -> addInfo(student);
-            case 2 -> delInfo(student);
-            case 3 -> modifyInfo(student);
-            case 4 -> queryInfo(student);
-            case 5 -> {
-            }
-            default -> {
-                System.out.println("输入的字符无效,请重新输入");
-                init();
+        loop:
+        while (true) {
+            Scanner sc = new Scanner(System.in);
+            System.out.println("---------------欢迎来到黑马学院学生管理系统---------------");
+            System.out.println("1：添加学生");
+            System.out.println("2：删除学生");
+            System.out.println("3：修改学生");
+            System.out.println("4：查询学生");
+            System.out.println("5：退出");
+            System.out.println("请输入您的选择：");
+            String num = sc.next();
+            switch (num) {
+                case "1" -> addInfo(student);
+                case "2" -> delInfo(student);
+                case "3" -> modifyInfo(student);
+                case "4" -> queryInfo(student);
+                case "5" -> {
+                    break loop;
+                }
+                default -> System.out.println("输入的字符无效,请重新输入");
             }
         }
     }
@@ -123,20 +126,26 @@ public class test {
 
     // 登陆界面
     public static void loginInterface() {
-        System.out.println("欢迎来到学生管理系统");
-        System.out.println("请选择操作1登录 2注册 3忘记密码");
-        Scanner sc = new Scanner(System.in);
-        String num = sc.next();
-        ArrayList<accountInformation> account = new ArrayList<>();
         accountInformation ac1 = new accountInformation("Admin", "744311", "360481196501260318", "15579486497");
+        ArrayList<accountInformation> account = new ArrayList<>();
         account.add(ac1);
-        switch (num) {
-            case "1" -> login(account);
-            case "2" -> register(account);
-            case "3" -> changePassword(account);
-            default -> {
-                System.out.println("输入的字符无效,请重新输入!!!");
-                loginInterface();
+        loop:
+        while (true) {
+            System.out.println("欢迎来到学生管理系统");
+            System.out.println("请选择操作1登录 2注册 3忘记密码");
+            Scanner sc = new Scanner(System.in);
+            String num = sc.next();
+            switch (num) {
+                case "1" -> {
+                    login(account);
+                    break loop;
+                }
+                case "2" -> register(account);
+                case "3" -> changePassword(account);
+                default -> {
+                    System.out.println("输入的字符无效,请重新输入!!!");
+                    break loop;
+                }
             }
         }
     }
@@ -144,72 +153,99 @@ public class test {
     // 登陆
     public static void login(ArrayList<accountInformation> account) {
         Scanner sc = new Scanner(System.in);
-        System.out.println("请输入用户名：");
-        String userName = sc.next();
-        boolean flag = isUserName(account, userName);
-        System.out.println("请输入密码：");
-        String passWord = sc.next();
-        // System.out.println(account.get(1).getUserName());
-
-        if (flag) {
+        while (true) {
+            System.out.println("请输入用户名：");
+            String userName = sc.next();
+            boolean flag = isUserName(account, userName);
+            System.out.println("请输入密码：");
+            String passWord = sc.next();
+            String passWord1 = " ";
+            // 输入的用户名不对时，会返回-1
             int index = getIndex(account, userName);
-            String passWord1 = account.get(index).getPassWord();
-            if (passWord1.equals(passWord)) {
-                init();
-            } else {
-                System.out.println("输入的用户名或密码不正确！！！");
-                login(account);
+            if (index != -1) {
+                passWord1 = account.get(index).getPassWord();
             }
-        } else {
-            System.out.println("输入的用户名不正确！！！");
-            login(account);
+            // 验证用户名和密码
+            if (passWord1.equals(passWord) && flag) {
+                init();
+                break;
+            } else System.out.println("输入的用户名或密码不正确！！！");
         }
     }
 
     // 注册
     public static void register(ArrayList<accountInformation> account) {
         Scanner sc = new Scanner(System.in);
-        System.out.println("请输入用户名：");
-        String userName = sc.next();
-        boolean flag = verificationUserName(account, userName);
-        if (flag) {
+        // 判断用户名
+        String userName;
+        while (true) {
+            System.out.println("请输入用户名：");
+            userName = sc.next();
+            boolean flag = verificationUserName(account, userName);
+            if (flag) {
+                break;
+            } else System.out.println("输入的用户名已存在或者不符合要求！！！");
+        }
+        // 判断密码
+        String passWord;
+        while (true) {
             System.out.println("请输入密码：");
-            String passWord = sc.next();
+            passWord = sc.next();
             System.out.println("请再次输入密码：");
             String passWord1 = sc.next();
             if (confirmPassword(passWord, passWord1)) {
-                System.out.println("请输入身份证号：");
-                String id = sc.next();
-                if (verificationId(id)) {
-                    System.out.println("请输入手机号：");
-                    String phoneNum = sc.next();
-                    if (verificationPhoneNum(phoneNum)) {
-                        accountInformation a = new accountInformation(userName, passWord, id, phoneNum);
-                        account.add(a);
-                        System.out.println("注册成功！！");
-                        loginInterface();
-                    } else {
-                        System.out.println("输入的手机号格式不对！！！");
-                        register(account);
-                    }
-                } else {
-                    System.out.println("输入的不符合要求！！！");
-                    register(account);
-                }
-            } else {
-                System.out.println("两次输入的密码不一致！！！");
-                register(account);
-            }
-        } else {
-            System.out.println("输入的用户名已存在！！！");
-            register(account);
+                break;
+            } else System.out.println("两次输入的密码不一致！！！");
         }
+        // 判断身份证号
+        String id;
+        while (true) {
+            System.out.println("请输入身份证号：");
+            id = sc.next();
+            if (verificationId(id)) {
+                break;
+            } else System.out.println("输入的不符合要求！！！");
+        }
+        // 判断手机号
+        String phoneNum;
+        while (true) {
+            System.out.println("请输入手机号：");
+            phoneNum = sc.next();
+            if (verificationPhoneNum(phoneNum)) {
+                break;
+            } else System.out.println("输入的手机号格式不对！！！");
+        }
+        accountInformation a = new accountInformation(userName, passWord, id, phoneNum);
+        account.add(a);
+        System.out.println("注册成功！！");
     }
 
     // 忘记密码,修改密码
     public static void changePassword(ArrayList<accountInformation> account) {
-        System.out.println("修改密码");
-
+        Scanner sc = new Scanner(System.in);
+        String userName;
+        // 判断需要修改密码的用户名是否存在
+        while (true) {
+            System.out.println("请输入需要修改密码的用户名");
+            userName = sc.next();
+            boolean flag = isUserName(account, userName);
+            if (flag) {
+                break;
+            } else System.out.println("输入的用户名不存在!!!");
+        }
+        // 判断两次输入的密码是否一致,若一致 则修改 若不一致 则重新输入
+        while (true) {
+            int index = getIndex(account, userName);
+            System.out.println("请输入新密码：");
+            String passWord = sc.next();
+            System.out.println("请再次输入新密码：");
+            String passWord1 = sc.next();
+            if (confirmPassword(passWord, passWord1)) {
+                account.get(index).setPassWord(passWord);
+                System.out.println("修改密码成功！！！");
+                break;
+            } else System.out.println("两次输入的密码不一致！！！");
+        }
     }
 
     // 预存入学生信息
@@ -236,12 +272,8 @@ public class test {
 
     // 判断userName是否存在
     public static boolean isUserName(ArrayList<accountInformation> account, String userName) {
-        for (int i = 0; i < account.size(); i++) {
-            if (userName.equals(account.get(i).getUserName())) {
-                return true;
-            }
-        }
-        return false;
+        int flag = getIndex(account, userName);
+        return flag != -1;
     }
 
     // 获取输入用户的索引
@@ -256,18 +288,28 @@ public class test {
 
     // 验证注册输入的用户名是否符合规则
     public static boolean verificationUserName(ArrayList<accountInformation> account, String userName) {
-        // 1.验证用户名是否存在
-        boolean flag = isUserName(account, userName);
-        if (!flag) {
-            if (userName.length() >= 3 && userName.length() <= 15) {
-                char[] arr = userName.toCharArray();
-                for (int i = 0; i < arr.length; i++) {
-                    if ((arr[i] >= 'a' && arr[i] < 'z') || (arr[i] >= 'A' && arr[i] < 'Z') || (arr[i] >= '0' && arr[i] <= '9')) {
-                        return true;
-                    }
+        // 验证用户名的的长度
+        if (userName.length() < 3 || userName.length() > 15) {
+            return false;
+        }
+        // 验证用户名是否只是由字母和数字组成
+        for (int i = 0; i < userName.length(); i++) {
+            char c = userName.charAt(i);
+            if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9'))) {
+                return false;
+            }
+        }
+        // 验证用户名是否全由数字组成
+        for (int i = 0; i < userName.length(); i++) {
+            char c = userName.charAt(i);
+            if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
+                // 如果有多个验证条件，那么验证唯一性的语句放在最后
+                // 验证用户名是否存在
+                boolean flag = isUserName(account, userName);
+                if (!flag) {
+                    return true;
                 }
             }
-            return false;
         }
         return false;
     }
@@ -280,25 +322,32 @@ public class test {
     // 验证身份证号是否符合需求
     public static boolean verificationId(String id) {
         char[] arr = id.toCharArray();
-        if (id.length() == 18 && arr[0] != '0' && ((arr[arr.length - 1] > '0' && arr[arr.length - 1] < '9') || arr[arr.length - 1] == 'x' || arr[arr.length - 1] == 'X')) {
-            for (int i = 0; i < arr.length - 1; i++) {
-                if (arr[i] >= '0' && arr[i] <= '9') {
-                    return true;
-                }
+        // 长度是18，第一位不是0，最后以为可以是数字和x或者X
+        if (!(id.length() == 18 && arr[0] != '0' && ((arr[arr.length - 1] > '0' && arr[arr.length - 1] < '9') || arr[arr.length - 1] == 'x' || arr[arr.length - 1] == 'X'))) {
+            return false;
+        }
+        // 前十七位必须是数字
+        for (int i = 0; i < arr.length - 1; i++) {
+            if (arr[i] < '0' || arr[i] > '9') {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
+    // 验证手机号格式是否正确
     public static boolean verificationPhoneNum(String phoneNum) {
         char[] arr = phoneNum.toCharArray();
-        if (phoneNum.length() == 11 && arr[0] == '1') {
-            for (int i = 1; i < arr.length; i++) {
-                if (arr[i] >= '0' && arr[i] <= '9') {
-                    return true;
-                }
+        // 长度是11，第一位是12
+        if (phoneNum.length() != 11 || arr[0] != '1') {
+            return false;
+        }
+        // 全部是数字
+        for (int i = 1; i < arr.length; i++) {
+            if (arr[i] < '0' || arr[i] > '9') {
+                return false;
             }
         }
-        return false;
+        return true;
     }
 }
